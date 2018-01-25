@@ -216,7 +216,7 @@ class Parser
                 } elseif ($c === '\\') {
                     $this->state = self::STATE_START_ESCAPE;
                 } elseif ($c < "\x1f") {
-                    $this->throwParseError("Unescaped control character encountered: " . $c);
+                    $this->handleUnescapedControlCharacter($c);
                 } else {
                     $this->buffer .= $c;
                 }
@@ -694,5 +694,15 @@ class Parser
             $this->charNumber,
             $message
         );
+    }
+
+    protected function appendToBuffer($c)
+    {
+        $this->buffer .= $c;
+    }
+
+    protected function handleUnescapedControlCharacter($c)
+    {
+        $this->throwParseError("Unescaped control character encountered: " . $c);
     }
 }
